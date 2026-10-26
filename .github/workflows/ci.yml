@@ -1,0 +1,33 @@
+name: Java CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Grant execute permission for Maven Wrapper
+        run: |
+          if [ -f java-assignment/mvnw ]; then
+            chmod +x java-assignment/mvnw
+          fi
+
+      - name: Build, Test & Verify Coverage with Maven
+        run: |
+          cd java-assignment
+          mvn clean verify
